@@ -63,7 +63,7 @@ void UMenu::OnHostButtonClicked()
 	
 	if (MultiplayerSessionsSubsystem)
 	{
-		MultiplayerSessionsSubsystem->CreateSession(4, FString("FreeForAll"), true, true);
+		MultiplayerSessionsSubsystem->CreateSession(4, FString("FreeForAll"));
 	}
 }
 
