@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "Menu.generated.h"
 
 UCLASS()
@@ -13,16 +14,27 @@ class MULTIPLAYERTPS_API UMenu : public UUserWidget
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void MenuSetup();
+	void MenuSetup(int32 NumberOfPublicConnections = 4, FString TypeOfMatch = FString(TEXT("FreeForAll")));
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString LobbyLevelPath = FString(TEXT("/Game/Maps/Lobby"));
 
 protected:
 	virtual bool Initialize() override;
 	
 	UFUNCTION()
 	void OnHostButtonClicked();
-  
 	UFUNCTION()
-	void OnLoginButtonClicked();
+	void OnJoinButtonClicked();
+
+	UFUNCTION()
+	void OnCreateSessionComplete(bool bWasSuccessful);
+	void OnFindSessionComplete(bool bWasSuccessful, const TArray<FOnlineSessionSearchResult>& SearchResults);
+	void OnJoinSessionComplete(EOnJoinSessionCompleteResult::Type Result);
+	UFUNCTION()
+	void OnDestroySessionComplete(bool bWasSuccessful);
+	UFUNCTION()
+	void OnStartSessionComplete(bool bWasSuccessful);
 
 private:
 	class UMultiplayerSessionsSubsystem* MultiplayerSessionsSubsystem;
@@ -31,5 +43,8 @@ private:
 	class UButton* HostButton;
 
 	UPROPERTY(meta=(BindWidget))
-	UButton* LoginButton;
+	UButton* JoinButton;
+
+	int32 PublicConnectionsNumber;
+	FString MatchType;
 };
