@@ -6,6 +6,12 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "MultiplayerSessionsSubsystem.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FMultiplayerOnCreateSessionComplete, bool bWasSuccessful);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FMultiplayerOnFindSessionComplete, bool bWasSuccessful, const TArray<FOnlineSessionSearchResult>& SessionResults);
+DECLARE_MULTICAST_DELEGATE_OneParam(FMultiplayerOnJoinSessionCompleteDelegate, EOnJoinSessionCompleteResult::Type Result);
+DECLARE_MULTICAST_DELEGATE_OneParam(FMultiplayerOnDestroySessionCompleteDelegate, bool bWasSuccessful);
+DECLARE_MULTICAST_DELEGATE_OneParam(FMultiplayerOnStartSessionCompleteDelegate, bool bWasSuccessful);
+
 /**
  * 
  */
@@ -17,36 +23,36 @@ class MULTIPLAYERSESSIONS_API UMultiplayerSessionsSubsystem : public UGameInstan
 public:
 	UMultiplayerSessionsSubsystem();
 
-	void CreateSession(int32 NumPublicConnections, FString MatchType);
-
+	void CreateSession(int32 NumPublicConnections, const FString& TypeOfMatch);
 	void FindSessions(int32 MaxSearchResults);
-
 	void JoinSession(const FOnlineSessionSearchResult& SessionResult);
-
-	void DestroySession(const FOnlineSessionSearchResult& SessionResult);
-
+	void DestroySession();
 	void StartSession(const FOnlineSessionSearchResult& SessionResult);
+
+	FMultiplayerOnCreateSessionComplete MultiplayerOnCreateSessionCompleteDelegate;
+	FMultiplayerOnFindSessionComplete MultiplayerOnFindSessionCompleteDelegate;
+	FMultiplayerOnJoinSessionCompleteDelegate MultiplayerOnJoinSessionCompleteDelegate;
+	FMultiplayerOnDestroySessionCompleteDelegate MultiplayerOnDestroySessionCompleteDelegate;
+	FMultiplayerOnStartSessionCompleteDelegate MultiplayerOnStartSessionCompleteDelegate;
 
 protected:
 	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
-
-	void OnFindSessionComplete(int32 NumSearchResults, bool bWasSuccessful, const TArray<FOnlineSessionSearchResult>& SearchResults);
-
+	void OnFindSessionsComplete(bool bWasSuccessful);
 	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
-
 	void OnDestroySessionComplete(FName SessionName, bool bWasSuccessful);
-
 	void OnStartSessionComplete(FName SessionName, bool bWasSuccessful);
-	
+	void CreateSessionAfterDestroyComplete(bool bWasSuccessful);
+
 private:
 	IOnlineSessionPtr SessionInterface;
 	TSharedPtr<FOnlineSessionSettings> SessionSettings;
+	TSharedPtr<FOnlineSessionSearch> SessionsSearch;
 
 	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
 	FDelegateHandle OnCreateSessionCompleteDelegateHandle;
 
-	FOnFindFriendSessionCompleteDelegate OnFindFriendSessionCompleteDelegate;
-	FDelegateHandle OnFindFriendSessionCompleteDelegateHandle;
+	FOnFindSessionsCompleteDelegate OnFindSessionsCompleteDelegate;
+	FDelegateHandle OnFindSessionsCompleteDelegateHandle;
 
 	FOnJoinSessionCompleteDelegate OnJoinSessionCompleteDelegate;
 	FDelegateHandle OnJoinSessionCompleteDelegateHandle;
@@ -56,5 +62,9 @@ private:
 
 	FOnStartSessionCompleteDelegate OnStartSessionCompleteDelegate;
 	FDelegateHandle OnStartSessionCompleteDelegateHandle;
-	
+
+	FDelegateHandle OnCreateAfterDestroyCompleteDelegateHandle;
+
+	int32 NumberPublicConnections = 4;
+	FString MatchType = FString(TEXT("FreeForAll"));
 };
