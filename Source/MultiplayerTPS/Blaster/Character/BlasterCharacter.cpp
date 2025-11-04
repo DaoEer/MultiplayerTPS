@@ -3,6 +3,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 class UEnhancedInputLocalPlayerSubsystem;
@@ -18,6 +19,9 @@ ABlasterCharacter::ABlasterCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 void ABlasterCharacter::Tick(float DeltaSeconds)
@@ -34,6 +38,9 @@ void ABlasterCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 		if (MoveAction)
 		{
 			EnhancedInput->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABlasterCharacter::Move);
+			EnhancedInput->BindAction(CameraAction, ETriggerEvent::Triggered, this, &ABlasterCharacter::Camera);
+			EnhancedInput->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ABlasterCharacter::Jump);
+			EnhancedInput->BindAction(FireAction, ETriggerEvent::Triggered, this, &ABlasterCharacter::Fire);
 		}
 	}
 }
@@ -59,7 +66,6 @@ void ABlasterCharacter::Move(const FInputActionValue& Value)
 {
 	FVector2D MoveVector = Value.Get<FVector2D>();
 
-	UE_LOG(LogTemp, Warning, TEXT("MoveVector: %s"), *MoveVector.ToString());
 	if (Controller != nullptr)
 	{
 		// 获取摄像机朝向
@@ -74,4 +80,22 @@ void ABlasterCharacter::Move(const FInputActionValue& Value)
 		AddMovementInput(ForwardDir, MoveVector.X);
 		AddMovementInput(RightDir, MoveVector.Y);
 	}
+}
+
+void ABlasterCharacter::Camera(const FInputActionValue& Value)
+{
+	FVector2D MouseMoveVector = Value.Get<FVector2D>();
+	UE_LOG(LogTemp, Warning, TEXT("Camera: %s"), *MouseMoveVector.ToString())
+	AddControllerYawInput(MouseMoveVector.X);
+	AddControllerPitchInput(MouseMoveVector.Y);
+}
+
+void ABlasterCharacter::Jump(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Jump: %s"), *Value.ToString());
+}
+
+void ABlasterCharacter::Fire(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Fire: %s"), *Value.ToString());
 }

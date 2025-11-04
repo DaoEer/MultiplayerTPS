@@ -23,8 +23,19 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	class UInputAction* MoveAction;
-
 	void Move(const FInputActionValue& Value);
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* CameraAction;
+	void Camera(const FInputActionValue& Value);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* JumpAction;
+	void Jump(const FInputActionValue& Value);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* FireAction;
+	void Fire(const FInputActionValue& Value);
 	
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
