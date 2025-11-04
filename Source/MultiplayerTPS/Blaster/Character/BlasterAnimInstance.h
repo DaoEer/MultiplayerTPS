@@ -1,5 +1,4 @@
 #pragma once
-#include "BlasterCharacter.h"
 #include "BlasterAnimInstance.generated.h"
 
 UCLASS()

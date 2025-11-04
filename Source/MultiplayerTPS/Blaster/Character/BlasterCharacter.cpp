@@ -93,6 +93,7 @@ void ABlasterCharacter::Camera(const FInputActionValue& Value)
 void ABlasterCharacter::Jump(const FInputActionValue& Value)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Jump: %s"), *Value.ToString());
+	ACharacter::Jump();
 }
 
 void ABlasterCharacter::Fire(const FInputActionValue& Value)
