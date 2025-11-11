@@ -47,7 +47,7 @@ void UMultiplayerSessionsSubsystem::FindSessions(int32 MaxSearchResults)
 	SessionsSearch = MakeShareable(new FOnlineSessionSearch());
 	SessionsSearch->MaxSearchResults = MaxSearchResults;
 	SessionsSearch->bIsLanQuery = Online::GetSubsystem(GetWorld())->GetSubsystemName() == "NULL";
-	SessionsSearch->QuerySettings.Set(SEARCH_LOBBIES, true, EOnlineComparisonOp::Equals);
+	SessionsSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
 
 	if (ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController(); !SessionInterface->FindSessions(*LocalPlayer->GetPreferredUniqueNetId(), SessionsSearch.ToSharedRef()))
 	{

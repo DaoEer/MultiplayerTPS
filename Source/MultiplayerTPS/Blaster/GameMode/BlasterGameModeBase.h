@@ -4,13 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
-#include "BlasterGameMode.generated.h"
+#include "BlasterGameModeBase.generated.h"
 
-/**
- * 
- */
 UCLASS()
-class MULTIPLAYERTPS_API ABlasterGameMode : public AGameMode
+class MULTIPLAYERTPS_API ABlasterGameModeBase : public AGameMode
 {
 	GENERATED_BODY()
 
