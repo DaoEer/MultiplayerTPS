@@ -62,6 +62,21 @@ bool UMenu::Initialize()
 	return true;
 }
 
+void UMenu::NativeDestruct()
+{
+	RemoveFromParent();
+	if (UWorld* World = GetWorld())
+	{
+		if (APlayerController* PlayerController = World->GetFirstPlayerController())
+		{
+			FInputModeGameOnly InputModeData;
+			PlayerController->SetInputMode(InputModeData);
+			PlayerController->SetShowMouseCursor(false);
+		}
+	}
+	Super::NativeDestruct();
+}
+
 void UMenu::OnHostButtonClicked()
 {
 	if (MultiplayerSessionsSubsystem)
@@ -80,13 +95,6 @@ void UMenu::OnJoinButtonClicked()
 
 void UMenu::OnCreateSessionComplete(bool bWasSuccessful)
 {
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		15.f,
-		FColor::Yellow,
-		FString::Printf(TEXT("CreateSession: %s"), bWasSuccessful ? TEXT("Success") : TEXT("Failure"))
-	);
-
 	if (!bWasSuccessful)
 	{
 		return;

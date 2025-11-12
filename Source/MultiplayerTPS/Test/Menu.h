@@ -21,7 +21,8 @@ public:
 
 protected:
 	virtual bool Initialize() override;
-	
+	virtual void NativeDestruct() override;
+
 	UFUNCTION()
 	void OnHostButtonClicked();
 	UFUNCTION()
@@ -38,7 +39,7 @@ protected:
 
 private:
 	class UMultiplayerSessionsSubsystem* MultiplayerSessionsSubsystem;
-	
+
 	UPROPERTY(meta=(BindWidget))
 	class UButton* HostButton;
 
